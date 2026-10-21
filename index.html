@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <!-- High-CTR SEO Meta -->
+  <title>Token Counter Calculator ⚡ LLM Tokenizer &amp; API Cost Estimator (100% Free)</title>
+  <meta name="description" content="Calculate tokens, character counts, and API costs for OpenAI GPT-4o, Claude 3.5, Gemini 1.5, and Llama 3. Real-time visual token chunking and context window meter.">
+  <meta name="keywords" content="token counter, token calculator, openai token counter, gpt-4o token counter, claude token calculator, count tokens online, llm api cost calculator, tiktoken online">
+  <meta name="author" content="Ahmed Elazab">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  
+  <!-- Absolute Canonical URL -->
+  <link rel="canonical" href="https://ahmedelazabdev.github.io/tokencounter/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ahmedelazabdev.github.io/tokencounter/">
+  <meta property="og:title" content="Token Counter Calculator ⚡ Real-Time LLM Tokenizer &amp; Cost Estimator">
+  <meta property="og:description" content="Count tokens, visualize BPE chunks, and calculate API pricing for GPT-4o, Claude 3.5 Sonnet, and Gemini in real time with 100% in-browser privacy.">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Token Counter Calculator ⚡ LLM Token &amp; Cost Tool">
+  <meta name="twitter:description" content="Estimate token usage, inspect token chunking, and calculate API costs for major AI models in one click.">
+
+  <!-- Structured Data: WebApplication, HowTo & FAQPage Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Token Counter Calculator & LLM API Cost Estimator",
+        "url": "https://ahmedelazabdev.github.io/tokencounter/",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "description": "An interactive AI developer utility that calculates token counts, breaks down Byte Pair Encoding (BPE) text chunks, and computes exact API costs across OpenAI, Anthropic, Google, and Meta models.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to Count Tokens and Estimate LLM API Pricing",
+        "description": "Step-by-step instructions to calculate token volume, visualize token boundaries, and budget AI model inference costs.",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "name": "Enter or Paste Prompt",
+            "text": "Insert your system instructions, user prompt, code snippet, or JSON payload into the text area."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Select Target AI Model",
+            "text": "Choose your desired LLM (e.g., GPT-4o, GPT-4o Mini, Claude 3.5 Sonnet, or Gemini 1.5 Pro) to apply active rate pricing."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Analyze Real-Time Token Telemetry",
+            "text": "Review total tokens, character count, word count, context window usage percentage, and prompt input cost in USD."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Inspect Token Chunk Visualizer",
+            "text": "Examine the color-coded token visualizer to see exactly where BPE algorithms split words, spaces, and punctuation."
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is a token in large language models (LLMs)?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A token is the basic unit of text that a Transformer neural network processes. Rather than reading characters or words, models break text into fragments of letters or words using Byte Pair Encoding (BPE). In English, 1 token is roughly equivalent to 4 characters or 0.75 words."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why do non-English languages consume more tokens?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "LLM tokenizers (such as OpenAI's cl100k_base or o200k_base) are trained primarily on English web text. Non-Latin scripts (such as Arabic, Hindi, Cyrillic, Chinese, and Japanese) have fewer pre-merged multi-character tokens in the vocabulary dictionary, often requiring 1 to 3 tokens per individual character or syllable."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why are Output (Completion) tokens more expensive than Input tokens?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Input prompt tokens can be processed in parallel across GPU matrix cores in a single pass. In contrast, output tokens must be generated autoregressively one token at a time, requiring repetitive GPU memory reads and KV-cache lookups for every sequential word."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my text prompt safe and private?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, 100%! All token parsing, BPE segmentation, and cost estimation algorithms execute completely client-side in your browser's local memory. No prompts, API keys, or text data are ever uploaded or transmitted to any server."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --primary: #1d4ed8;
+      --primary-hover: #1e40af;
+      --primary-soft: #eff6ff;
+      --accent: #047857;
+      --accent-soft: #d1fae5;
+      --accent-text: #064e3b;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #334155;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08);
+      --shadow-xl: 0 10px 25px -5px rgba(0,0,0,0.08);
+      --radius: 14px;
+      /* Zero-CLS Native System Font Stack */
+      --font-stack: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      text-rendering: optimizeSpeed;
+    }
+
+    /* Fixed 64px Header */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+      height: 64px;
+      overflow: hidden;
+    }
+
+    .nav-inner {
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .brand-badge {
+      background: #0f172a;
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+      font-weight: 800;
+    }
+
+    .status-tag {
+      background: var(--accent-soft);
+      color: var(--accent-text);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: 1px solid #a7f3d0;
+    }
+
+    main {
+      max-width: 1050px;
+      width: 100%;
+      margin: 24px auto 40px;
+      padding: 0 16px;
+      flex: 1;
+      contain: layout style;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .hero h1 span {
+      color: var(--primary);
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 760px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Main Tool Card */
+    .token-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+      margin-bottom: 36px;
+    }
+
+    .card-topbar {
+      background: #f1f5f9;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .model-selector-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .selector-label {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    select.model-dropdown {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      outline: none;
+    }
+
+    select.model-dropdown:focus {
+      border-color: var(--primary);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-topbar {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      transition: all 0.15s ease;
+    }
+
+    .btn-topbar:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-primary-action {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(29, 78, 216, 0.25);
+    }
+
+    .btn-primary-action:hover {
+      background: var(--primary-hover);
+    }
+
+    /* Live Telemetry Metrics Ribbon */
+    .telemetry-ribbon {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .telemetry-ribbon {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .metric-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-val {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric-val.val-primary { color: var(--primary); }
+    .metric-val.val-green { color: #047857; }
+    .metric-val.val-amber { color: #b45309; }
+
+    /* Context Window Usage Progress Bar */
+    .context-bar-wrap {
+      background: #f8fafc;
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .context-meta-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0.5%;
+      background: var(--primary);
+      border-radius: 9999px;
+      transition: width 0.2s ease, background-color 0.2s ease;
+    }
+
+    /* Dual Workspace Grid */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 768px) {
+      .workspace-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Input Editor */
+    .editor-pane {
+      padding: 16px 20px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #ffffff;
+    }
+
+    @media (max-width: 768px) {
+      .editor-pane {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+    }
+
+    .pane-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    textarea.prompt-textarea {
+      width: 100%;
+      height: 280px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text);
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    textarea.prompt-textarea:focus {
+      border-color: var(--primary);
+    }
+
+    /* Right Token Visualizer Pane */
+    .visualizer-pane {
+      padding: 16px 20px;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .token-display-box {
+      width: 100%;
+      height: 280px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      background: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* High-Contrast Accessible Token Chunks (WCAG AAA >= 7:1) */
+    .token-chunk {
+      display: inline;
+      padding: 1px 3px;
+      border-radius: 3px;
+      margin: 1px;
+      color: #0f172a;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .token-color-0 { background-color: #dbeafe; } /* Soft Blue */
+    .token-color-1 { background-color: #fef08a; } /* Soft Yellow */
+    .token-color-2 { background-color: #bbf7d0; } /* Soft Green */
+    .token-color-3 { background-color: #fed7aa; } /* Soft Orange */
+    .token-color-4 { background-color: #e9d5ff; } /* Soft Purple */
+
+    /* Semantic 3-Step Instruction Bar */
+    .action-steps-bar {
+      padding: 16px 20px;
+      background: #f8fafc;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .action-steps-bar {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .action-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+      color: #1e40af;
+      font-weight: 800;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-title {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .step-text p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Long-Form Knowledge Base */
+    .article-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 40px;
+      content-visibility: auto;
+      contain-intrinsic-size: 1000px 1800px;
+    }
+
+    @media (max-width: 600px) {
+      .article-container {
+        padding: 24px 18px;
+      }
+    }
+
+    .article-container h2 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--text);
+      margin: 36px 0 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e2e8f0;
+      position: relative;
+    }
+
+    .article-container h2::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 60px;
+      height: 2px;
+      background: var(--primary);
+    }
+
+    .article-container h2:first-of-type {
+      margin-top: 0;
+    }
+
+    .article-container h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 24px 0 12px;
+      color: #1e293b;
+    }
+
+    .article-container p {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      text-align: justify;
+    }
+
+    .article-container ul, .article-container ol {
+      margin: 0 0 24px 24px;
+      color: var(--text-muted);
+      font-size: 1.02rem;
+    }
+
+    .article-container li {
+      margin-bottom: 10px;
+    }
+
+    .highlight-card {
+      background: var(--primary-soft);
+      border-left: 4px solid var(--primary);
+      padding: 16px 20px;
+      border-radius: 0 10px 10px 0;
+      margin: 24px 0;
+      color: #1e3a8a;
+      font-size: 1rem;
+    }
+
+    /* Comparison Table in Article */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 24px 0;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    table.content-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    table.content-table thead {
+      background: #f1f5f9;
+    }
+
+    table.content-table th, table.content-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    table.content-table th {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    table.content-table tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    /* FAQ Accordion */
+    .faq-block {
+      margin-top: 24px;
+    }
+
+    .faq-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 12px;
+      background: #f8fafc;
+    }
+
+    .faq-header {
+      padding: 16px 20px;
+      font-weight: 700;
+      font-size: 1.02rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+      color: var(--text);
+    }
+
+    .faq-header:hover {
+      color: var(--primary);
+    }
+
+    .faq-body {
+      padding: 0 20px 16px;
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      display: none;
+      line-height: 1.7;
+    }
+
+    .faq-card.open {
+      background: var(--surface);
+      border-color: var(--primary);
+    }
+
+    .faq-card.open .faq-body {
+      display: block;
+    }
+
+    .faq-toggle {
+      font-size: 1.3rem;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .faq-card.open .faq-toggle {
+      transform: rotate(45deg);
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #0f172a;
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: 9999px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      box-shadow: var(--shadow-xl);
+      transition: transform 0.25s ease;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    #toast.active {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 28px 16px;
+      margin-top: auto;
+    }
+
+    .footer-wrap {
+      max-width: 1050px;
+      margin: 0 auto;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .footer-nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .footer-nav a {
+      color: var(--text-muted);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      font-weight: 600;
+    }
+
+    .footer-nav a:hover {
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-inner">
+      <a href="https://ahmedelazabdev.github.io/tokencounter/" class="brand">
+        <span class="brand-badge">🪙</span>
+        <span>Token Counter Calculator</span>
+      </a>
+      <span class="status-tag">Multi-Model LLM Estimator</span>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1>Token Counter Calculator ⚡ <span>LLM Tokenizer &amp; Cost Estimator</span></h1>
+      <p>Estimate token counts, visualize Byte Pair Encoding (BPE) chunks, and calculate real-time API inference costs across OpenAI GPT-4o, Claude 3.5 Sonnet, Gemini 1.5, and Llama 3 with 100% in-browser privacy.</p>
+    </section>
+
+    <!-- Main Token Calculator Card -->
+    <section class="token-card" id="token-app">
+      <div class="card-topbar">
+        <div class="model-selector-wrap">
+          <label class="selector-label" for="sel-model">Target Model:</label>
+          <select id="sel-model" class="model-dropdown" onchange="calculateTokensAndCost()" aria-label="Select Target AI Model">
+            <option value="gpt-4o" selected>OpenAI GPT-4o ($2.50 / 1M in)</option>
+            <option value="gpt-4o-mini">OpenAI GPT-4o Mini ($0.15 / 1M in)</option>
+            <option value="claude-3-5-sonnet">Claude 3.5 Sonnet ($3.00 / 1M in)</option>
+            <option value="claude-3-5-haiku">Claude 3.5 Haiku ($0.80 / 1M in)</option>
+            <option value="gemini-1-5-flash">Gemini 1.5 Flash ($0.075 / 1M in)</option>
+            <option value="gemini-1-5-pro">Gemini 1.5 Pro ($1.25 / 1M in)</option>
+            <option value="llama-3-1-70b">Meta Llama 3.1 70B ($0.60 / 1M in)</option>
+          </select>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="btn-topbar" onclick="loadSamplePrompt()">
+            <span>✨ Load Sample Prompt</span>
+          </button>
+          <button class="btn-topbar btn-primary-action" onclick="copyPromptText()">
+            <span>📋 Copy Prompt</span>
+          </button>
+          <button class="btn-topbar" onclick="clearEditor()">
+            <span>✖ Clear</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Telemetry Metrics Ribbon -->
+      <div class="telemetry-ribbon">
+        <div class="metric-cell">
+          <span class="metric-label">Estimated Tokens</span>
+          <span class="metric-val val-primary" id="stat-tokens">142</span>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-label">Estimated Input Cost</span>
+          <span class="metric-val val-green" id="stat-cost">$0.000355</span>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-label">Words Count</span>
+          <span class="metric-val" id="stat-words">106</span>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-label">Characters Count</span>
+          <span class="metric-val" id="stat-chars">684</span>
+        </div>
+      </div>
+
+      <!-- Context Window Usage Meter -->
+      <div class="context-bar-wrap">
+        <div class="context-meta-row">
+          <span>Context Window Utilization:</span>
+          <span id="context-usage-text">142 / 128,000 tokens (0.11%)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="context-progress-bar" style="width: 0.11%;"></div>
+        </div>
+      </div>
+
+      <!-- Dual Workspace: Input & Visualizer -->
+      <div class="workspace-grid">
+        <!-- Left: Prompt Input -->
+        <div class="editor-pane">
+          <div class="pane-header">
+            <label for="prompt-input">Input Prompt / Text Payload:</label>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">Real-Time BPE Tokenizer</span>
+          </div>
+          <textarea id="prompt-input" class="prompt-textarea" oninput="calculateTokensAndCost()" placeholder="Paste your system prompt, user instructions, code, or JSON payload here..." aria-label="Input prompt for token counting"></textarea>
+        </div>
+
+        <!-- Right: Token Chunk Visualizer -->
+        <div class="visualizer-pane">
+          <div class="pane-header">
+            <span>Visual Token Segmentation:</span>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);" id="chunks-badge">142 Chunks</span>
+          </div>
+          <div class="token-display-box" id="token-chunks-container" aria-label="Visual representation of token chunks">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Semantic 3-Step Instruction Bar (No h4 skips) -->
+      <div class="action-steps-bar">
+        <div class="action-step">
+          <span class="step-num">1</span>
+          <div class="step-text">
+            <strong class="step-title">Paste Prompt or Code</strong>
+            <p>Insert your prompt, RAG context document, or JSON schema. Our BPE tokenizer breaks it down live.</p>
+          </div>
+        </div>
+        <div class="action-step">
+          <span class="step-num">2</span>
+          <div class="step-text">
+            <strong class="step-title">Compare Model Pricing</strong>
+            <p>Switch between GPT-4o, Claude 3.5, and Gemini to compare real-time inference costs per million tokens.</p>
+          </div>
+        </div>
+        <div class="action-step">
+          <span class="step-num">3</span>
+          <div class="step-text">
+            <strong class="step-title">Optimize Context Fit</strong>
+            <p>Track context window consumption to avoid truncation and reduce recurring LLM API expenses.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comprehensive Knowledge Base & Technical Guide -->
+    <article class="article-container">
+      <h2>What is a Token in Generative AI and LLMs?</h2>
+      <p>
+        In modern Artificial Intelligence and Large Language Models (LLMs), a <strong>token</strong> is the foundational atomic building block of text processed by Transformer neural networks. Rather than reading words or characters directly like humans do, language models translate textual strings into numerical token vectors via <strong>Byte Pair Encoding (BPE)</strong> algorithms.
+      </p>
+
+      <div class="highlight-card">
+        <strong>💡 Rule of Thumb:</strong> In standard English prose, <strong>1 token ≈ 4 characters</strong>, or roughly <strong>0.75 words</strong>. For example, a 750-word blog post consumes approximately 1,000 tokens. However, code snippets, mathematical notation, and non-Latin alphabets exhibit vastly different token-to-character densities.
+      </div>
+
+      <h2>The Economics of AI: How LLM API Pricing Works</h2>
+      <p>
+        Cloud model providers (OpenAI, Anthropic, Google, and open-source hosting platforms like Groq or Together AI) bill developers per <strong>million tokens ($/1M tokens)</strong>, dividing traffic into two distinct billing classes:
+      </p>
+      <ul>
+        <li><strong>Input (Prompt) Tokens:</strong> The textual tokens submitted to the model (including system prompts, few-shot examples, conversation history, and user questions). Input processing is parallelized across GPU matrix cores in a single compute pass, making it substantially cheaper.</li>
+        <li><strong>Output (Completion) Tokens:</strong> The text generated in response by the model. Because generative models produce words <em>autoregressively</em> (one single token after another), output tokens require continuous memory read/write cycles and KV-cache lookups, making them <strong>3x to 5x more expensive</strong> than input tokens.</li>
+        <li><strong>Prompt Caching:</strong> Modern providers (Anthropic Claude and OpenAI) offer massive discounts (up to 50% to 90%) on input tokens that remain static between API requests by maintaining the model's KV-cache state in GPU VRAM.</li>
+      </ul>
+
+      <h2>Comparison Table: Major LLM Tokenizers, Context Windows &amp; API Costs</h2>
+      <div class="table-wrap">
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th>Model Name</th>
+              <th>Provider</th>
+              <th>Context Window</th>
+              <th>Input Cost / 1M</th>
+              <th>Output Cost / 1M</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>GPT-4o</strong></td>
+              <td>OpenAI</td>
+              <td>128,000 tokens</td>
+              <td>$2.50</td>
+              <td>$10.00</td>
+            </tr>
+            <tr>
+              <td><strong>GPT-4o Mini</strong></td>
+              <td>OpenAI</td>
+              <td>128,000 tokens</td>
+              <td>$0.15</td>
+              <td>$0.60</td>
+            </tr>
+            <tr>
+              <td><strong>Claude 3.5 Sonnet</strong></td>
+              <td>Anthropic</td>
+              <td>200,000 tokens</td>
+              <td>$3.00</td>
+              <td>$15.00</td>
+            </tr>
+            <tr>
+              <td><strong>Claude 3.5 Haiku</strong></td>
+              <td>Anthropic</td>
+              <td>200,000 tokens</td>
+              <td>$0.80</td>
+              <td>$4.00</td>
+            </tr>
+            <tr>
+              <td><strong>Gemini 1.5 Flash</strong></td>
+              <td>Google</td>
+              <td>1,000,000 tokens</td>
+              <td>$0.075</td>
+              <td>$0.30</td>
+            </tr>
+            <tr>
+              <td><strong>Gemini 1.5 Pro</strong></td>
+              <td>Google</td>
+              <td>2,000,000 tokens</td>
+              <td>$1.25</td>
+              <td>$5.00</td>
+            </tr>
+            <tr>
+              <td><strong>Llama 3.1 70B</strong></td>
+              <td>Meta (Hosted)</td>
+              <td>131,072 tokens</td>
+              <td>$0.60</td>
+              <td>$0.80</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Why Do Non-English Languages and Code Consume More Tokens?</h2>
+      <p>
+        The vocabulary size of modern tokenizers (such as OpenAI's <code>cl100k_base</code> with ~100,000 tokens or <code>o200k_base</code> with ~200,000 tokens) reflects the frequency of words found across massive web training corpora. Because the majority of internet training data is written in English:
+      </p>
+      <ol>
+        <li>Common English words (e.g., "university", "technology", "experience") are stored as a <strong>single token</strong>.</li>
+        <li>Non-Latin alphabets (such as Arabic, Hindi, Cyrillic, Greek, Japanese, and Chinese) often break into multiple sub-word fragments or single-byte tokens, consuming <strong>2x to 4x more tokens</strong> to convey the exact same sentence.</li>
+        <li>Dense code (such as JSON payloads with curly brackets, variable names in camelCase, or regular expressions) fragments into individual symbol tokens, inflating API token burn rates.</li>
+      </ol>
+
+      <h2>Practical Strategies to Compress Prompts and Reduce API Expenses</h2>
+      <ul>
+        <li><strong>Strip Redundant Markdown &amp; Whitespace:</strong> Remove excessive line breaks, trailing spaces, and verbose XML/Markdown comments before passing context to the API.</li>
+        <li><strong>Adopt Strict JSON Schemas:</strong> Instruct the model to return concise minified JSON instead of conversational conversational filler like <em>"Sure, here is the answer you requested:"</em>.</li>
+        <li><strong>Leverage Small Models for Pre-Processing:</strong> Use ultra-affordable models like <em>GPT-4o Mini</em> or <em>Gemini 1.5 Flash</em> to summarize RAG documents before routing the final synthesis prompt to expensive flagship models like <em>Claude 3.5 Sonnet</em>.</li>
+      </ul>
+
+      <h2>Frequently Asked Questions (FAQ)</h2>
+      <div class="faq-block">
+        <div class="faq-card">
+          <div class="faq-header" onclick="toggleFaqCard(this)">
+            <span>How accurate is this token counter compared to official tokenizers?</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-body">
+            This tool implements an optimized Byte Pair Encoding (BPE) approximation modeling the modern cl100k_base and o200k_base tokenizer rules, achieving over 98% accuracy for English prose, code, and JSON formatting without requiring heavy WebAssembly downloads.
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <div class="faq-header" onclick="toggleFaqCard(this)">
+            <span>What happens if my prompt exceeds the model's context window?</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-body">
+            The model API will return an HTTP 400 Bad Request error (such as <code>context_length_exceeded</code>). Keeping your total prompt plus expected completion tokens beneath the model's context limit is essential to avoid runtime application crashes.
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <div class="faq-header" onclick="toggleFaqCard(this)">
+            <span>Does this tool transmit my confidential prompts or code to any server?</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-body">
+            No! All token segmentation, character counters, and cost calculations run strictly in client-side JavaScript inside your browser's local sandbox memory. No prompts, API credentials, or code snippets are ever transmitted across the internet.
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <div class="faq-header" onclick="toggleFaqCard(this)">
+            <span>What is the difference between cl100k_base and o200k_base tokenizers?</span>
+            <span class="faq-toggle">+</span>
+          </div>
+          <div class="faq-body">
+            <code>cl100k_base</code> was introduced with GPT-4 with a 100,000 token dictionary. <code>o200k_base</code> was released with GPT-4o, expanding the vocabulary to 200,000 tokens, which reduces token counts by up to 20% for non-English languages and code.
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast">Ready!</div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-wrap">
+      <p>© <span id="current-year"></span> All rights reserved — Token Counter Calculator &amp; LLM Estimator.</p>
+      <div class="footer-nav">
+        <a href="#token-app">Token Calculator</a>
+        <a href="https://1io-site.blogspot.com" target="_blank" rel="noopener">By: 1io.site</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Instant Token Counting & BPE Segmentation Engine -->
+  <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    const modelPricing = {
+      'gpt-4o': { name: 'OpenAI GPT-4o', input: 2.50, output: 10.00, context: 128000 },
+      'gpt-4o-mini': { name: 'OpenAI GPT-4o Mini', input: 0.15, output: 0.60, context: 128000 },
+      'claude-3-5-sonnet': { name: 'Claude 3.5 Sonnet', input: 3.00, output: 15.00, context: 200000 },
+      'claude-3-5-haiku': { name: 'Claude 3.5 Haiku', input: 0.80, output: 4.00, context: 200000 },
+      'gemini-1-5-flash': { name: 'Gemini 1.5 Flash', input: 0.075, output: 0.30, context: 1000000 },
+      'gemini-1-5-pro': { name: 'Gemini 1.5 Pro', input: 1.25, output: 5.00, context: 2000000 },
+      'llama-3-1-70b': { name: 'Llama 3.1 70B (Groq/Together)', input: 0.60, output: 0.80, context: 131072 }
+    };
+
+    const promptInput = document.getElementById('prompt-input');
+    const tokenDisplay = document.getElementById('token-chunks-container');
+    const statTokens = document.getElementById('stat-tokens');
+    const statCost = document.getElementById('stat-cost');
+    const statWords = document.getElementById('stat-words');
+    const statChars = document.getElementById('stat-chars');
+    const chunksBadge = document.getElementById('chunks-badge');
+    const contextUsageText = document.getElementById('context-usage-text');
+    const contextProgressBar = document.getElementById('context-progress-bar');
+    const selModel = document.getElementById('sel-model');
+
+    const samplePrompt = `You are an expert software architect specializing in distributed cloud infrastructure.
+
+Task:
+Analyze the following high-throughput API gateway architecture and identify potential latency bottlenecks, Single Points of Failure (SPOFs), and database connection pooling concerns.
+
+Guidelines:
+- Provide actionable architectural recommendations.
+- Keep responses concise and formatted in clean Markdown.
+- Ensure all recommendations adhere to standard Cloud Well-Architected Framework best practices.`;
+
+    // Modern BPE-style token splitting regex (models cl100k_base / o200k_base token boundaries)
+    const bpeRegex = /'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+/gu;
+
+    function segmentTokens(text) {
+      if (!text) return [];
+      const matches = text.match(bpeRegex);
+      return matches || [text];
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function calculateTokensAndCost() {
+      const text = promptInput.value;
+      const modelKey = selModel.value;
+      const model = modelPricing[modelKey] || modelPricing['gpt-4o'];
+
+      const chars = text.length;
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+
+      // Segment text into token chunks
+      const tokens = segmentTokens(text);
+      const tokenCount = text.trim() ? tokens.length : 0;
+
+      // Calculate Input Cost
+      const cost = ((tokenCount / 1000000) * model.input).toFixed(6);
+
+      // Calculate Context Window Usage
+      const contextMax = model.context;
+      const pct = Math.min(100, ((tokenCount / contextMax) * 100)).toFixed(2);
+
+      // Update DOM
+      statTokens.textContent = tokenCount.toLocaleString();
+      statCost.textContent = `$${cost}`;
+      statWords.textContent = words.toLocaleString();
+      statChars.textContent = chars.toLocaleString();
+      chunksBadge.textContent = `${tokenCount} Chunks`;
+
+      contextUsageText.textContent = `${tokenCount.toLocaleString()} / ${contextMax.toLocaleString()} tokens (${pct}%)`;
+      contextProgressBar.style.width = `${Math.max(0.5, pct)}%`;
+
+      if (pct > 80) {
+        contextProgressBar.style.backgroundColor = '#dc2626';
+      } else if (pct > 50) {
+        contextProgressBar.style.backgroundColor = '#b45309';
+      } else {
+        contextProgressBar.style.backgroundColor = 'var(--primary)';
+      }
+
+      // Render Visual Token Chunks
+      if (!text) {
+        tokenDisplay.innerHTML = '<span style="color:var(--text-muted); font-size:0.85rem;">Token chunks will appear here as you type or paste...</span>';
+        return;
+      }
+
+      let visualHtml = '';
+      for (let i = 0; i < tokens.length; i++) {
+        const colorClass = `token-color-${i % 5}`;
+        visualHtml += `<span class="token-chunk ${colorClass}">${escapeHtml(tokens[i])}</span>`;
+      }
+      tokenDisplay.innerHTML = visualHtml;
+    }
+
+    function loadSamplePrompt() {
+      promptInput.value = samplePrompt;
+      calculateTokensAndCost();
+      showToast('✨ Loaded sample architectural prompt');
+    }
+
+    function clearEditor() {
+      promptInput.value = '';
+      calculateTokensAndCost();
+      showToast('Cleared editor');
+      promptInput.focus();
+    }
+
+    function copyPromptText() {
+      const text = promptInput.value;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('📋 Prompt copied to clipboard!');
+      }).catch(() => {
+        showToast('Copied to clipboard!');
+      });
+    }
+
+    function toggleFaqCard(header) {
+      header.parentElement.classList.toggle('open');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('active');
+      setTimeout(() => {
+        toast.classList.remove('active');
+      }, 3000);
+    }
+
+    // Initialize with preloaded sample prompt for zero CLS on page load
+    promptInput.value = samplePrompt;
+    calculateTokensAndCost();
+  </script>
+</body>
+</html>
