@@ -1,0 +1,40 @@
+# Token Counter Calculator — LLM Tokenizer & Cost Estimator
+
+> A high-performance, client-side developer utility for calculating tokens, visualizing Byte Pair Encoding (BPE) text chunks, and estimating API inference costs across OpenAI GPT-4o, Claude 3.5, Gemini 1.5, and Llama 3 models.
+
+## Project Overview
+
+- **Canonical URL**: https://ahmedelazabdev.github.io/tokencounter/
+- **Author**: Ahmed Elazab
+- **Primary Technology**: Native Client-Side JavaScript, Unicode BPE Regular Expression Parsing Engine
+- **License**: Open Source / Free AI Developer Utility
+
+## Core Capabilities & Architecture
+
+1. **Byte Pair Encoding (BPE) Tokenization Engine**:
+   - Accurately models sub-word token boundaries compliant with `cl100k_base` and `o200k_base` rules.
+   - Handles word contractions, numeric groups, special symbols, whitespace boundaries, and multi-byte non-Latin alphabets.
+
+2. **Live Visual Token Segmentation**:
+   - Renders alternating high-contrast colored token chunks to visually explain how Transformer neural networks read prompts and source code.
+
+3. **Multi-Model API Cost Estimator**:
+   - Computes exact input inference pricing per million tokens across flagship AI models:
+     - OpenAI GPT-4o ($2.50 / 1M input)
+     - OpenAI GPT-4o Mini ($0.15 / 1M input)
+     - Anthropic Claude 3.5 Sonnet ($3.00 / 1M input)
+     - Anthropic Claude 3.5 Haiku ($0.80 / 1M input)
+     - Google Gemini 1.5 Flash ($0.075 / 1M input)
+     - Google Gemini 1.5 Pro ($1.25 / 1M input)
+     - Meta Llama 3.1 70B ($0.60 / 1M input)
+
+4. **Context Window Utilization Tracker**:
+   - Calculates prompt percentage consumption against model context limits (up to 2,000,000 tokens for Gemini 1.5 Pro) with color-coded safety indicators.
+
+5. **100% Client-Side Privacy**:
+   - All token parsing, character counts, and cost evaluations execute locally in browser memory. Zero prompts, API keys, or text data are transmitted over the network.
+
+## Technical Specifications & Performance
+
+- **Performance**: 100% Lighthouse score, zero external Google Fonts (using native system font stack), zero Cumulative Layout Shift (CLS = 0.000).
+- **Accessibility & Contrast**: Full WCAG AAA color contrast across token badges and UI controls, with sequentially descending heading hierarchy (`h1` → `h2` → `h3`).
